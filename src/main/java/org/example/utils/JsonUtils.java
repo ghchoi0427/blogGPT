@@ -1,29 +1,29 @@
 package org.example.utils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class JsonUtils {
 
     public static String getResponseContent(String responseBody) {
         String content = null;
         try {
-            JSONObject responseJson = new JSONObject(responseBody);
-            JSONArray choices = responseJson.getJSONArray("choices");
+            JsonObject responseJson = JsonParser.parseString(responseBody).getAsJsonObject();
+            JsonArray choices = responseJson.getAsJsonArray("choices");
 
-            JSONObject message = choices.getJSONObject(0).getJSONObject("message");
-            content = message.getString("content");
-        } catch (JSONException e) {
+            JsonObject message = choices.get(0).getAsJsonObject().getAsJsonObject("message");
+            content = message.get("content").getAsString();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return content;
     }
 
-    public static String extractURLFromJSON(String jsonStr) throws JSONException {
-        JSONObject jsonObj = new JSONObject(jsonStr);
-        JSONArray dataArray = jsonObj.getJSONArray("data");
-        JSONObject dataObj = dataArray.getJSONObject(0);
-        return dataObj.getString("url");
+    public static String extractURLFromJSON(String jsonStr) {
+        JsonObject jsonObj = JsonParser.parseString(jsonStr).getAsJsonObject();
+        JsonArray dataArray = jsonObj.getAsJsonArray("data");
+        JsonObject dataObj = dataArray.get(0).getAsJsonObject();
+        return dataObj.get("url").getAsString();
     }
 }

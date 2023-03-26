@@ -1,21 +1,17 @@
 package org.example.utils;
 
 public class HtmlUtil {
-    public static String htmlFormatter(String title, String imageUrl, String content) {
-        String html = "<html><head><meta charset=\"utf-8\"></head><body>";
-        html += "<h1>" + title + "</h1>";
-        html += "<img src=\"" + imageUrl + "\"/>";
-        html += "<p>";
-        String[] contentParts = content.split(",");
-        for (int i = 0; i < contentParts.length; i++) {
-            html += contentParts[i].trim();
-            if (i != contentParts.length - 1) {
-                html += "<br/>";
-            }
+    public static String htmlFormatter(String imageUrl, String content) {
+        int bodyIndex = content.indexOf("<body");
+        if (bodyIndex == -1) {
+            return content;
         }
-        html += "</p>";
-        html += "</body></html>";
-        return html;
+
+        String imageTag = "<img src=\"" + imageUrl + "\">";
+        int insertIndex = content.indexOf(">", bodyIndex) + 1; // insert after the opening body tag
+        String before = content.substring(0, insertIndex);
+        String after = content.substring(insertIndex);
+        return before + imageTag + after;
     }
 
 

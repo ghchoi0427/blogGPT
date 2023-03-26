@@ -17,8 +17,8 @@ public class BlogProgram {
     private final ExecutorService executorService;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    List<String> topics = Topics.getTopics();
-    int index = 0;
+    private List<String> topics = Topics.getTopics();
+    private int index = 0;
 
     public BlogProgram(ChatApi chatApi, ImageApi imageApi, int numThreads) {
         this.chatApi = chatApi;
@@ -27,11 +27,17 @@ public class BlogProgram {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
 
-    public void start() {
-        scheduledExecutorService.scheduleAtFixedRate(this::writeBlog, 0, 24 * 60 * 60 / 15, TimeUnit.SECONDS);
+    public void shutdown() {
+        scheduledExecutorService.shutdown();
+        executorService.shutdown();
     }
 
-    public void writeBlog() {
+    public void start() {
+        Runnable task = this::execute;
+        scheduledExecutorService.scheduleAtFixedRate(task, 0, 86400 / 15, TimeUnit.SECONDS);
+    }
+
+    public void execute() {
         System.out.println("upload initiated");
         String topic = topics.get((index++) % topics.size());
         Future<String> imageUrlFuture = executorService.submit(() -> imageApi.run(topic));
@@ -54,13 +60,7 @@ public class BlogProgram {
             System.err.println(e);
             throw new RuntimeException(e);
         } finally {
-            shutdown();
             System.out.println("writeBlog ended");
         }
-    }
-
-    public void shutdown() {
-        scheduledExecutorService.shutdown();
-        executorService.shutdown();
     }
 }

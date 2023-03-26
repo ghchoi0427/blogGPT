@@ -14,7 +14,7 @@ public class ChatApi {
     public String run(String topic, int maxTokens) {
         String url = "https://api.openai.com/v1/chat/completions";
         String model = "gpt-3.5-turbo";
-        String content = "write an essay in " + maxTokens + " tokens about: " + topic + "In a readable format";
+        String content = "write an essay about: " + topic + "in form of html tags";
         String role = "user";
 
         String requestBody = "{"

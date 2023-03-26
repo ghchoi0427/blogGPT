@@ -17,7 +17,7 @@ public class Topics {
     }
 
     public static List<String> getTopics() {
-        return new ArrayList<>(topics); // return a copy to prevent modification
+        return new ArrayList<>(topics);
     }
 
     public static void updateTopicsFromFile() throws IOException {
@@ -32,7 +32,7 @@ public class Topics {
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(5000); // check every 5 seconds
+                    Thread.sleep(1000 * 60 * 10);
                     updateTopicsFromFile();
                 } catch (Exception e) {
                     e.printStackTrace();
